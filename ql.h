@@ -80,5 +80,4 @@ struct {								\
 	qr_foreach((a_var), ql_first(a_head), a_field)
 
 #define	ql_reverse_foreach(a_var, a_head, a_field)			\
-#define	ql_reverse_foreach(a_var, a_head, a_field)			\
 	qr_reverse_foreach((a_var), ql_first(a_head), a_field)
