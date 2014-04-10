@@ -2515,7 +2515,7 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit* victim, SpellInfo const* spellInfo
     // Chance hit from victim SPELL_AURA_MOD_ATTACKER_SPELL_HIT_CHANCE auras
     modHitChance += victim->GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_ATTACKER_SPELL_HIT_CHANCE, schoolMask);
     // Reduce spell hit chance for Area of effect spells from victim SPELL_AURA_MOD_AOE_AVOIDANCE aura
-	if (spellInfo->IsAffectingArea())
+    if (spellInfo->IsAffectingArea())
         modHitChance -= victim->GetTotalAuraModifier(SPELL_AURA_MOD_AOE_AVOIDANCE);
 
     // Decrease hit chance from victim rating bonus
@@ -3035,7 +3035,7 @@ void Unit::SetCurrentCastSpell(Spell* pSpell)
     m_currentSpells[CSpellType] = pSpell;
     pSpell->SetReferencedFromCurrent(true);
 
-	pSpell->m_selfContainer = &(m_currentSpells[pSpell->GetCurrentContainer()]);
+    pSpell->m_selfContainer = &(m_currentSpells[pSpell->GetCurrentContainer()]);
 }
 
 void Unit::InterruptSpell(CurrentSpellTypes spellType, bool withDelayed, bool withInstant)
@@ -3251,14 +3251,14 @@ Aura* Unit::_TryStackingOrRefreshingExistingAura(SpellInfo const* newAura, uint8
                 else
                     bp = foundAura->GetSpellInfo()->Effects[i].BasePoints;
 
-				int32* oldBP = const_cast<int32*>(&(foundAura->GetEffect(i)->m_baseAmount));
+                int32* oldBP = const_cast<int32*>(&(foundAura->GetEffect(i)->m_baseAmount));
                 *oldBP = bp;
             }
 
             // correct cast item guid if needed
             if (castItemGUID != foundAura->GetCastItemGUID())
             {
-				uint64* oldGUID = const_cast<uint64 *>(&foundAura->m_castItemGuid);
+                uint64* oldGUID = const_cast<uint64 *>(&foundAura->m_castItemGuid);
                 *oldGUID = castItemGUID;
             }
 
@@ -3356,7 +3356,7 @@ void Unit::_ApplyAuraEffect(Aura* aura, uint8 effIndex)
     if (!aurApp->GetEffectMask())
         _ApplyAura(aurApp, 1<<effIndex);
     else
-		aurApp->_HandleEffect(effIndex, true);
+        aurApp->_HandleEffect(effIndex, true);
 }
 
 // handles effects of aura application
@@ -3392,7 +3392,7 @@ void Unit::_ApplyAura(AuraApplication * aurApp, uint8 effMask)
     for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
     {
         if (effMask & 1<<i && (!aurApp->GetRemoveMode()))
-			aurApp->_HandleEffect(i, true);
+            aurApp->_HandleEffect(i, true);
     }
 }
 
@@ -3444,14 +3444,14 @@ void Unit::_UnapplyAura(AuraApplicationMap::iterator &i, AuraRemoveMode removeMo
         }
     }
 
-	aurApp->_Remove();
+    aurApp->_Remove();
     aura->_UnapplyForTarget(this, caster, aurApp);
 
     // remove effects of the spell - needs to be done after removing aura from lists
     for (uint8 itr = 0; itr < MAX_SPELL_EFFECTS; ++itr)
     {
         if (aurApp->HasEffect(itr))
-			aurApp->_HandleEffect(itr, false);
+            aurApp->_HandleEffect(itr, false);
     }
 
     // all effect mustn't be applied
@@ -3645,7 +3645,7 @@ void Unit::RemoveAura(AuraApplication * aurApp, AuraRemoveMode mode)
         for (uint8 itr = 0; itr < MAX_SPELL_EFFECTS; ++itr)
         {
             if (aurApp->HasEffect(itr))
-				aurApp->_HandleEffect(itr, false);
+                aurApp->_HandleEffect(itr, false);
         }
         return;
     }
@@ -5822,6 +5822,16 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
                 {
                     triggered_spell_id = 37378;
                     break;
+                }
+                // Glyph of Succubus
+                case 56250:
+                {
+                    if (!target)
+                        return false;
+                    target->RemoveAurasByType(SPELL_AURA_PERIODIC_DAMAGE, 0, target->GetAura(32409)); // SW:D shall not be removed.
+                    target->RemoveAurasByType(SPELL_AURA_PERIODIC_DAMAGE_PERCENT);
+                    target->RemoveAurasByType(SPELL_AURA_PERIODIC_LEECH);
+                    return true;
                 }
             }
             break;
@@ -12849,8 +12859,6 @@ void Unit::ModSpellCastTime(SpellInfo const* spellProto, int32 & castTime, Spell
         castTime = int32(float(castTime) * m_modAttackSpeedPct[RANGED_ATTACK]);
     else if (spellProto->SpellVisual[0] == 3881 && HasAura(67556)) // cooking with Chef Hat.
         castTime = 500;
-        if(spellProto->Effects[0].Effect == SPELL_EFFECT_ENCHANT_ITEM || spellProto->Effects[0].Effect == SPELL_EFFECT_APPLY_GLYPH || spellProto->Effects[0].Effect == SPELL_EFFECT_ENCHANT_ITEM_PRISMATIC)
-                castTime = 1;
 }
 
 DiminishingLevels Unit::GetDiminishing(DiminishingGroup group)
@@ -15198,14 +15206,14 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
                 loot->FillLoot(lootid, LootTemplates_Creature, looter, false, false, creature->GetLootMode());
 
             loot->generateMoneyLoot(creature->GetCreatureTemplate()->mingold, creature->GetCreatureTemplate()->maxgold);
-            
+
             if (group)
             {
                 if (hasLooterGuid)
                     group->SendLooter(creature, looter);
                 else
                     group->SendLooter(creature, NULL);
-                    
+
                 // Update round robin looter only if the creature had loot
                 if (!creature->loot.empty())
                     group->UpdateLooterGuid(creature);
@@ -15954,7 +15962,7 @@ void Unit::RemoveVehicleKit()
         return;
 
     m_vehicleKit->Uninstall();
-	delete m_vehicleKit;
+    delete m_vehicleKit;
 
     m_vehicleKit = NULL;
 
